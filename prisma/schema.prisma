@@ -1,0 +1,56 @@
+// Controle Financeiro - Schema Prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoTransacao {
+  ENTRADA
+  SAIDA
+}
+
+model Categoria {
+  id         String      @id @default(cuid())
+  nome       String      @unique
+  cor        String      @default("#6366f1")
+  icone      String?
+  transacoes Transacao[]
+  createdAt  DateTime    @default(now())
+
+  @@map("categorias")
+}
+
+model Transacao {
+  id          String        @id @default(cuid())
+  titulo      String
+  observacao  String?
+  data        DateTime
+  valor       Decimal       @db.Decimal(15, 2)
+  tipo        TipoTransacao
+  categoriaId String?
+  categoria   Categoria?    @relation(fields: [categoriaId], references: [id])
+  anexos      Anexo[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("transacoes")
+}
+
+model Anexo {
+  id           String    @id @default(cuid())
+  nomeOriginal String
+  nomeArquivo  String
+  url          String
+  tipo         String
+  tamanho      Int
+  transacaoId  String
+  transacao    Transacao @relation(fields: [transacaoId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+
+  @@map("anexos")
+}
