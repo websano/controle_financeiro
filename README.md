@@ -1,6 +1,6 @@
-# FinançasPro — Controle Financeiro Pessoal
+# Finanças Libélula — Controle Financeiro Pessoal
 
-Aplicativo web completo para gestão financeira pessoal, com autenticação, dashboard interativo, categorias, exportação de relatórios e suporte a anexos.
+Aplicativo web completo para gestão financeira pessoal, com suporte a múltiplas instituições, dashboard interativo, categorias personalizadas, anexos e exportação de relatórios em PNG e PDF.
 
 ---
 
@@ -8,81 +8,103 @@ Aplicativo web completo para gestão financeira pessoal, com autenticação, das
 
 | Camada | Tecnologia |
 |---|---|
-| Framework | Next.js 16.1.6 (App Router, Turbopack) + TypeScript |
-| Banco de dados | PostgreSQL via Prisma 7.4.2 |
+| Framework | Next.js 16 (App Router, Turbopack) + TypeScript |
+| Banco de dados | PostgreSQL via Prisma 7.4 |
 | ORM Adapter | `@prisma/adapter-pg` |
 | Estilização | Tailwind CSS v4 |
 | Gráficos | Recharts 3 |
 | Ícones | lucide-react |
 | Datas | date-fns 4 (locale pt-BR) |
 | Upload | Multer 2 |
-| Exportação | html-to-image + jsPDF |
+| Exportação | html-to-image + jsPDF + html2canvas |
 
 ---
 
 ## Funcionalidades
 
 ### Autenticação
-- Tela de login com gradiente (`/login`)
+- Tela de login com gradiente escuro (`/login`)
 - Máscara de telefone automática no formato `(00) 00000-0000`
 - Campo de senha com botão mostrar/ocultar
 - Autenticação via cookie `httpOnly` com validade de 7 dias
-- Middleware de proteção em todas as rotas (exceto `/login` e `/api/auth`)
-- Credenciais: telefone `(33) 98410-4224` / senha `admin123`
+- Middleware de proteção em todas as rotas privadas
+- Redirecionamento automático para seleção de instituição após login
+
+### Múltiplas Instituições
+- Suporte a várias instituições (empresas, contas, carteiras)
+- Cada instituição tem nome, slug e cor personalizada
+- Seleção de instituição persistida em cookie de sessão
+- Dados de transações e categorias isolados por instituição
+- Tela dedicada para selecionar ou trocar de instituição (`/selecionar-instituicao`)
+- Botão "Trocar instituição" disponível na sidebar
 
 ### Dashboard (Página Principal)
 - **Card hero** — Saldo em Caixa com gradiente verde (positivo) ou vermelho (negativo)
-- **Grid 2 colunas** — Total de Entradas e Total de Saídas lado a lado
-- Gráfico de barras mensal dos últimos 6 meses (Recharts)
-- Lista das 5 transações mais recentes com atalhos de editar/excluir
-- Botão **Exportar Relatório** que abre o modal de exportação com filtro de período
+- **Grid 2 colunas** — Total de Entradas e Total de Saídas com contadores de lançamentos
+- Gráfico de barras mensais dos últimos 6 meses (Recharts)
+- Lista das últimas transações com atalhos de editar/excluir
+- Botões rápidos para adicionar **Entrada** ou **Saída**
+- Botão **Exportar Relatório** que abre o modal com filtros de período e categoria
 
 ### Transações
-- Listagem paginada com busca por título/observação
-- Filtro por tipo (Entrada / Saída) e por período (data início e data fim)
+- Listagem paginada (20 itens por página) com busca por título/observação
+- Filtros por: tipo (Entrada / Saída), período (data início e fim) e categorias
 - Criar nova transação (`/transacoes/nova?tipo=ENTRADA` ou `?tipo=SAIDA`)
 - Editar transação existente (`/transacoes/[id]/editar`)
 - Excluir transação com modal de confirmação
-- **Campo Categoria** em criar e editar (select populado da API)
-- **Máscara monetária** no campo Valor (`R$ 0,00` em tempo real)
-- Campos com validação obrigatória (Título, Valor, Data)
+- Máscara monetária no campo Valor (`R$ 0,00` em tempo real)
+- Seleção de categoria com opção de criar nova categoria inline
+- Campo de observação opcional
+- Upload de anexos (imagens e PDFs) diretamente na transação
 
 ### Categorias
 - Página de gerenciamento completo (`/categorias`)
-- Criar, editar inline e excluir categorias
-- Seletor de cor com 10 presets
-- Exibe contador de transações por categoria
+- Criar, editar e excluir categorias
+- Seletor de cor com 10 presets visuais
+- Exibe contador de transações vinculadas por categoria
 - Confirmação antes de excluir
+- Categorias isoladas por instituição
 
 ### Upload de Anexos
 - Suporte a JPG, PNG, GIF, WEBP e PDF (máx. 10 MB por arquivo)
-- Área de drag-and-drop + botão de seleção
+- Área de drag-and-drop + botão de seleção de arquivo
 - Pré-visualização dos arquivos antes de salvar
-- Listagem dos anexos existentes com botão de remoção
+- Listagem dos anexos existentes com botão de remoção individual
+- Arquivos removidos do servidor ao excluir a transação
 - Arquivos servidos de `/public/uploads/`
 
 ### Exportação de Relatórios
 - Modal com seletor de período (data início / data fim)
-- Pré-visualização do relatório: saldo, entradas, saídas, por categoria e lista de transações
-- **Exportar PNG** via `html-to-image` (compatível com Tailwind CSS v4 / oklch)
+- Filtro por categorias específicas
+- Pré-visualização completa do relatório na tela
+- Relatório inclui: resumo financeiro, breakdown por categoria e listagem de transações
+- **Exportar PNG** via `html-to-image`
 - **Exportar PDF** via jsPDF com suporte a múltiplas páginas
+- Identificação da instituição no relatório
 
 ### Interface / UX
 - **Responsiva**: sidebar no desktop, barra de navegação inferior no mobile
-- Barra inferior com 4 atalhos: Principal, Entradas, Saídas, Transações
-- Estado ativo correto nas abas de Entrada vs. Saída (via `useSearchParams`)
-- Inputs grandes (`py-3`, `text-base`) otimizados para toque mobile
-- Formulário remontado ao mudar de tipo (Entrada ↔ Saída)
-- Sidebar oculta automaticamente na tela de login (`AppShell`)
+- Sidebar desktop fixa com logo, navegação e instituição atual
+- Drawer menu deslizante no mobile com animação
+- Barra inferior mobile com 4 atalhos rápidos + menu
+- Logo personalizado (`icon_logo.png`) no topo da sidebar e login
+- Estado ativo correto nas abas de navegação
+- Inputs otimizados para toque mobile
+- Feedback visual de carregamento em todas as ações
+- Modais de confirmação antes de ações destrutivas
+- Localização completa em Português Brasileiro
 
 ---
 
-## Estrutura do Banco
+## Estrutura do Banco de Dados
 
 ```
-categorias  (id, nome, cor, icone?, createdAt)
-transacoes  (id, titulo, observacao?, data, valor, tipo: ENTRADA|SAIDA, categoriaId?, createdAt, updatedAt)
-anexos      (id, nomeOriginal, nomeArquivo, url, tipo, tamanho, transacaoId, createdAt)
+Instituicao  (id, nome, slug, cor, createdAt)
+Categoria    (id, nome, cor, icone?, instituicaoId?, createdAt)
+Transacao    (id, titulo, observacao?, data, valor, tipo: ENTRADA|SAIDA,
+              categoriaId?, instituicaoId?, createdAt, updatedAt)
+Anexo        (id, nomeOriginal, nomeArquivo, url, tipo, tamanho,
+              transacaoId, createdAt)
 ```
 
 ---
@@ -91,32 +113,97 @@ anexos      (id, nomeOriginal, nomeArquivo, url, tipo, tamanho, transacaoId, cre
 
 | Método | Rota | Descrição |
 |---|---|---|
-| POST | `/api/auth` | Login (define cookie `auth`) |
-| DELETE | `/api/auth` | Logout (limpa cookie) |
-| GET | `/api/dashboard` | Resumo, gráfico mensal e últimas transações |
-| GET | `/api/relatorio` | Dados filtrados por período para exportação |
+| POST | `/api/auth` | Login — define cookie `auth` |
+| DELETE | `/api/auth` | Logout — limpa cookies |
+| POST | `/api/auth/instituicao` | Selecionar instituição ativa |
+| DELETE | `/api/auth/instituicao` | Remover seleção de instituição |
+| GET | `/api/dashboard` | Saldo, gráfico mensal e últimas transações |
+| GET | `/api/relatorio` | Dados filtrados por período/categoria para exportação |
 | GET | `/api/transacoes` | Listar transações (paginação, busca, filtros) |
 | POST | `/api/transacoes` | Criar transação |
-| GET | `/api/transacoes/[id]` | Buscar transação por ID (inclui categoria e anexos) |
+| GET | `/api/transacoes/[id]` | Buscar transação por ID (com categoria e anexos) |
 | PUT | `/api/transacoes/[id]` | Atualizar transação |
-| DELETE | `/api/transacoes/[id]` | Excluir transação e seus arquivos físicos |
+| DELETE | `/api/transacoes/[id]` | Excluir transação e arquivos físicos |
 | GET | `/api/categorias` | Listar categorias com contagem de transações |
 | POST | `/api/categorias` | Criar categoria |
 | PUT | `/api/categorias/[id]` | Atualizar categoria |
 | DELETE | `/api/categorias/[id]` | Excluir categoria |
-| POST | `/api/upload` | Upload de arquivo (retorna URL) |
+| GET | `/api/instituicoes` | Listar instituições |
+| POST | `/api/instituicoes` | Criar instituição |
+| PUT | `/api/instituicoes/[id]` | Atualizar instituição |
+| DELETE | `/api/instituicoes/[id]` | Excluir instituição |
+| POST | `/api/upload` | Upload de arquivo anexo |
 | DELETE | `/api/anexos/[id]` | Remover anexo e arquivo físico |
+
+---
+
+## Estrutura de Pastas
+
+```
+src/
+├── app/
+│   ├── page.tsx                          # Dashboard (Principal)
+│   ├── layout.tsx                        # Layout raiz com AppShell
+│   ├── login/
+│   │   └── page.tsx                      # Tela de login
+│   ├── selecionar-instituicao/
+│   │   └── page.tsx                      # Seleção de instituição
+│   ├── transacoes/
+│   │   ├── page.tsx                      # Listagem de transações
+│   │   ├── nova/page.tsx                 # Nova transação
+│   │   └── [id]/editar/page.tsx          # Editar transação
+│   ├── categorias/
+│   │   └── page.tsx                      # Gerenciar categorias
+│   └── api/
+│       ├── auth/route.ts                 # Login / Logout
+│       ├── auth/instituicao/route.ts     # Seleção de instituição
+│       ├── dashboard/route.ts            # Dados do dashboard
+│       ├── relatorio/route.ts            # Dados de relatório
+│       ├── transacoes/route.ts           # CRUD transações
+│       ├── transacoes/[id]/route.ts      # Transação por ID
+│       ├── categorias/route.ts           # CRUD categorias
+│       ├── categorias/[id]/route.ts      # Categoria por ID
+│       ├── instituicoes/route.ts         # CRUD instituições
+│       ├── instituicoes/[id]/route.ts    # Instituição por ID
+│       ├── upload/route.ts               # Upload de arquivos
+│       └── anexos/[id]/route.ts          # Remover anexo
+├── components/
+│   ├── AppShell.tsx                      # Controla exibição da Sidebar
+│   ├── Sidebar.tsx                       # Navegação desktop + drawer mobile
+│   ├── TransacaoForm.tsx                 # Formulário unificado criar/editar
+│   ├── TransacaoCard.tsx                 # Card de transação na listagem
+│   ├── CardResumo.tsx                    # Card de resumo financeiro
+│   ├── GraficoMensal.tsx                 # Gráfico de barras mensal
+│   ├── ExportModal.tsx                   # Modal de exportação com filtros
+│   └── ModalConfirmacao.tsx              # Modal de confirmação genérico
+├── lib/
+│   └── prisma.ts                         # Instância do Prisma Client
+└── middleware.ts                         # Proteção de rotas via cookie
+prisma/
+├── schema.prisma                         # Schema do banco de dados
+└── migrations/                           # Histórico de migrações
+public/
+├── images/
+│   └── icon_logo.png                     # Logo do sistema
+└── uploads/                              # Arquivos anexados pelos usuários
+```
 
 ---
 
 ## Como executar
 
+### Pré-requisitos
+- Node.js 18+
+- PostgreSQL
+
+### Desenvolvimento
+
 ```bash
 # 1. Instalar dependências
 npm install
 
-# 2. Configurar variável de ambiente
-# Crie um arquivo .env na raiz com:
+# 2. Configurar variáveis de ambiente
+# Crie um arquivo .env na raiz:
 DATABASE_URL="postgresql://usuario:senha@host:5432/controle_financeiro"
 
 # 3. Aplicar migrações no banco
@@ -135,78 +222,26 @@ npm run build
 npm start
 ```
 
----
-
-## Estrutura de Pastas
-
-```
-src/
-├── app/
-│   ├── page.tsx                     # Dashboard (Principal)
-│   ├── layout.tsx                   # Layout raiz com AppShell
-│   ├── login/
-│   │   └── page.tsx                 # Tela de login
-│   ├── transacoes/
-│   │   ├── page.tsx                 # Listagem de transações
-│   │   ├── nova/page.tsx            # Nova transação
-│   │   └── [id]/editar/page.tsx     # Editar transação
-│   ├── categorias/
-│   │   └── page.tsx                 # Gerenciar categorias
-│   └── api/
-│       ├── auth/route.ts
-│       ├── dashboard/route.ts
-│       ├── relatorio/route.ts
-│       ├── transacoes/route.ts
-│       ├── transacoes/[id]/route.ts
-│       ├── categorias/route.ts
-│       ├── categorias/[id]/route.ts
-│       ├── upload/route.ts
-│       └── anexos/[id]/route.ts
-├── components/
-│   ├── AppShell.tsx                 # Controla exibição da Sidebar
-│   ├── Sidebar.tsx                  # Navegação desktop + mobile
-│   ├── TransacaoForm.tsx            # Formulário unificado criar/editar
-│   ├── TransacaoCard.tsx            # Card de transação na listagem
-│   ├── CardResumo.tsx               # Card de resumo financeiro
-│   ├── GraficoMensal.tsx            # Gráfico de barras mensal
-│   ├── ExportModal.tsx              # Modal de exportação com período
-│   └── ModalConfirmacao.tsx         # Modal de confirmação genérico
-├── lib/
-│   └── prisma.ts                    # Instância do Prisma Client
-├── middleware.ts                    # Proteção de rotas via cookie
-prisma/
-├── schema.prisma                    # Schema do banco de dados
-└── migrations/                      # Histórico de migrações
-```
-
+### Produção com PM2
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+pm2 start ecosystem.config.js
+pm2 save
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Acesso
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> **Login padrão:**
+> - Telefone: `(33) 98410-4224`
+> - Senha: `admin123`
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy atual
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **URL**: [https://financeiro.bazarlibelula.com.br](https://financeiro.bazarlibelula.com.br)
+- **Servidor**: Contabo VPS — `157.173.118.181:3333`
+- **Gerenciador de processos**: PM2 (`controle-financeiro`)
