@@ -13,6 +13,12 @@ import {
 import TransacaoCard from "@/components/TransacaoCard";
 import ModalConfirmacao from "@/components/ModalConfirmacao";
 
+interface Categoria {
+  id: string;
+  nome: string;
+  cor: string;
+}
+
 interface Transacao {
   id: string;
   titulo: string;
@@ -38,9 +44,28 @@ export default function TransacoesPage() {
   const [filtroTipo, setFiltroTipo] = useState<"" | "ENTRADA" | "SAIDA">("");
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categoriasFiltro, setCategoriasFiltro] = useState<Set<string>>(new Set());
   const [pagina, setPagina] = useState(1);
   const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
   const [deletandoId, setDeletandoId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/categorias")
+      .then((r) => r.json())
+      .then((data) => setCategorias(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
+  const toggleCategoria = (id: string) => {
+    setCategoriasFiltro((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+    setPagina(1);
+  };
 
   const carregarTransacoes = useCallback(async () => {
     setCarregando(true);
@@ -50,6 +75,7 @@ export default function TransacoesPage() {
       if (busca) params.set("busca", busca);
       if (dataInicio) params.set("dataInicio", dataInicio);
       if (dataFim) params.set("dataFim", dataFim);
+      if (categoriasFiltro.size > 0) params.set("categorias", [...categoriasFiltro].join(","));
       params.set("pagina", String(pagina));
       params.set("porPagina", "20");
 
@@ -62,7 +88,7 @@ export default function TransacoesPage() {
     } finally {
       setCarregando(false);
     }
-  }, [filtroTipo, busca, dataInicio, dataFim, pagina]);
+  }, [filtroTipo, busca, dataInicio, dataFim, categoriasFiltro, pagina]);
 
   useEffect(() => {
     const timer = setTimeout(carregarTransacoes, 300);
@@ -87,10 +113,11 @@ export default function TransacoesPage() {
     setFiltroTipo("");
     setDataInicio("");
     setDataFim("");
+    setCategoriasFiltro(new Set());
     setPagina(1);
   };
 
-  const temFiltros = busca || filtroTipo || dataInicio || dataFim;
+  const temFiltros = busca || filtroTipo || dataInicio || dataFim || categoriasFiltro.size > 0;
 
   return (
     <div className="space-y-6">
@@ -155,27 +182,23 @@ export default function TransacoesPage() {
           </select>
 
           {/* Data início */}
-          <div>
-            <input
-              type="date"
-              value={dataInicio}
-              onChange={(e) => { setDataInicio(e.target.value); setPagina(1); }}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
-            />
-          </div>
+          <input
+            type="date"
+            value={dataInicio}
+            onChange={(e) => { setDataInicio(e.target.value); setPagina(1); }}
+            className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
+          />
 
           {/* Data fim */}
-          <div>
-            <input
-              type="date"
-              value={dataFim}
-              onChange={(e) => { setDataFim(e.target.value); setPagina(1); }}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
-            />
-          </div>
+          <input
+            type="date"
+            value={dataFim}
+            onChange={(e) => { setDataFim(e.target.value); setPagina(1); }}
+            className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
+          />
         </div>
 
-        {/* Filtro tipo - pills */}
+        {/* Pills de tipo */}
         <div className="flex gap-2 flex-wrap">
           {(["", "ENTRADA", "SAIDA"] as const).map((t) => (
             <button
@@ -197,6 +220,33 @@ export default function TransacoesPage() {
             </button>
           ))}
         </div>
+
+        {/* Pills de categoria */}
+        {categorias.length > 0 && (
+          <div className="flex gap-2 flex-wrap pt-1 border-t border-slate-100">
+            {categorias.map((c) => {
+              const ativa = categoriasFiltro.has(c.id);
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => toggleCategoria(c.id)}
+                  className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition"
+                  style={
+                    ativa
+                      ? { backgroundColor: c.cor, borderColor: c.cor, color: "#fff" }
+                      : { backgroundColor: c.cor + "15", borderColor: c.cor + "40", color: c.cor }
+                  }
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: ativa ? "#fff" : c.cor }}
+                  />
+                  {c.nome}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Lista */}
@@ -216,7 +266,14 @@ export default function TransacoesPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
+          {/* Cabeçalho da tabela - apenas desktop */}
+          <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide w-16 flex-shrink-0">Data</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide flex-1">Descrição</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide text-right">Valor</p>
+            <div className="w-6" />
+          </div>
           {transacoes.map((t) => (
             <TransacaoCard key={t.id} transacao={t} onDeletar={(id) => setConfirmandoId(id)} />
           ))}

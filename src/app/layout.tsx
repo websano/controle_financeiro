@@ -9,7 +9,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "FinançasPro - Controle Financeiro",
+  title: "Finanças Libélula - Controle Financeiro",
   description: "Sistema de controle financeiro pessoal com entradas e saídas",
 };
 

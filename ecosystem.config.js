@@ -2,12 +2,12 @@ module.exports = {
   apps: [
     {
       name: "controle-financeiro",
-      script: "node_modules/.bin/next",
-      args: "start",
-      cwd: "./",
+      script: "npm",
+      args: "start -- -p 3333",
+      cwd: "/var/www/controle_financeiro",
       env: {
         NODE_ENV: "production",
-        PORT: 3333,
+        PORT: "3333",
       },
       instances: 1,
       autorestart: true,

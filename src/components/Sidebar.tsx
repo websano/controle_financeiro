@@ -1,41 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ArrowUpCircle,
   ArrowDownCircle,
   ListOrdered,
-  DollarSign,
   Tag,
+  RefreshCw,
+  Menu,
+  X,
+  Building2,
 } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
+
+interface Instituicao {
+  id: string;
+  nome: string;
+  cor: string;
+}
 
 const navItems = [
   { href: "/", label: "Principal", icon: LayoutDashboard },
   { href: "/transacoes", label: "Transações", icon: ListOrdered },
   { href: "/categorias", label: "Categorias", icon: Tag },
+  { href: "/selecionar-instituicao", label: "Instituições", icon: Building2 },
   { href: "/transacoes/nova?tipo=ENTRADA", label: "Entrada", icon: ArrowUpCircle },
   { href: "/transacoes/nova?tipo=SAIDA", label: "Saída", icon: ArrowDownCircle },
 ];
 
-// Bottom nav mobile: 4 itens (sem Categorias)
-const mobileNavItems = navItems.filter((i) => !i.href.startsWith("/categorias"));
+const mobileNavItems = [
+  { href: "/", label: "Principal", icon: LayoutDashboard },
+  { href: "/transacoes", label: "Transações", icon: ListOrdered },
+  { href: "/transacoes/nova?tipo=ENTRADA", label: "Entrada", icon: ArrowUpCircle },
+  { href: "/transacoes/nova?tipo=SAIDA", label: "Saída", icon: ArrowDownCircle },
+];
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? match[2] : null;
+}
 
 function SidebarContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const tipoAtual = searchParams.get("tipo");
+
+  const [instituicaoAtual, setInstituicaoAtual] = useState<Instituicao | null>(null);
+  const [drawerAberto, setDrawerAberto] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/instituicoes")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const id = getCookie("instituicao");
+        const atual = data.find((i: Instituicao) => i.id === id) ?? null;
+        setInstituicaoAtual(atual);
+      })
+      .catch(() => {});
+  }, [pathname]);
+
+  // Fecha o drawer ao navegar
+  useEffect(() => {
+    setDrawerAberto(false);
+  }, [pathname]);
+
+  const trocarInstituicao = async () => {
+    await fetch("/api/auth/instituicao", { method: "DELETE" });
+    router.push("/selecionar-instituicao");
+  };
 
   function isAtivo(href: string) {
     const [path, query] = href.split("?");
     if (path === "/") return pathname === "/";
     if (!pathname.startsWith(path)) return false;
-    // Se o link tem query param de tipo, verificar se bate
     if (query) {
       const paramTipo = new URLSearchParams(query).get("tipo");
-      // Na página nova, diferenciar por tipo
       if (pathname === "/transacoes/nova") {
         return tipoAtual === paramTipo || (!tipoAtual && paramTipo === "ENTRADA");
       }
@@ -86,17 +130,110 @@ function SidebarContent() {
             </Link>
           );
         })}
+
+        {/* Botão Menu */}
+        <button
+          onClick={() => setDrawerAberto(true)}
+          className="flex flex-col items-center justify-center flex-1 py-2 gap-0.5 text-[11px] font-medium text-slate-400 active:opacity-70"
+        >
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center">
+            <Menu size={21} />
+          </div>
+          <span>Menu</span>
+        </button>
       </nav>
+
+      {/* ===== DRAWER MOBILE ===== */}
+      {drawerAberto && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-[60] bg-black/50 md:hidden"
+            onClick={() => setDrawerAberto(false)}
+          />
+          {/* Painel */}
+          <div className="fixed top-0 left-0 h-full w-72 bg-slate-900 text-white z-[70] flex flex-col shadow-2xl md:hidden animate-in slide-in-from-left duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-5 border-b border-slate-700">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center overflow-hidden">
+                  <img src="/images/icon_logo.png" alt="Logo" width={28} height={28} className="object-contain" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-base leading-tight">Finanças Libélula</h1>
+                  <p className="text-slate-400 text-xs">Controle Financeiro</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setDrawerAberto(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Navegação */}
+            <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const ativo = isAtivo(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
+                      ${
+                        ativo
+                          ? "bg-emerald-600 text-white shadow-md"
+                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      }`}
+                  >
+                    <Icon size={18} />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Instituição */}
+            <div className="px-4 py-4 border-t border-slate-700">
+              {instituicaoAtual ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 px-2">
+                    <div
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: instituicaoAtual.cor }}
+                    />
+                    <p className="text-xs font-semibold text-white truncate leading-tight">
+                      {instituicaoAtual.nome}
+                    </p>
+                  </div>
+                  <button
+                    onClick={trocarInstituicao}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <RefreshCw size={13} />
+                    Trocar instituição
+                  </button>
+                </div>
+              ) : (
+                <div className="text-slate-600 text-xs px-2">Carregando...</div>
+              )}
+              <p className="text-slate-600 text-xs px-2 mt-3">© {new Date().getFullYear()} Finanças Libélula</p>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ===== SIDEBAR — somente desktop ===== */}
       <aside className="hidden md:flex fixed top-0 left-0 h-full w-64 bg-slate-900 text-white z-40 flex-col shadow-2xl">
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-700">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
-            <DollarSign size={22} className="text-white" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center overflow-hidden">
+            <img src="/images/icon_logo.png" alt="Logo" width={32} height={32} className="object-contain" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">FinançasPro</h1>
+            <h1 className="font-bold text-lg leading-tight">Finanças Libélula</h1>
             <p className="text-slate-400 text-xs">Controle Financeiro</p>
           </div>
         </div>
@@ -124,9 +261,31 @@ function SidebarContent() {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-700 text-slate-500 text-xs">
-          © {new Date().getFullYear()} FinançasPro
+        {/* Instituição atual */}
+        <div className="px-4 py-4 border-t border-slate-700">
+          {instituicaoAtual ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2.5 px-2">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: instituicaoAtual.cor }}
+                />
+                <p className="text-xs font-semibold text-white truncate leading-tight">
+                  {instituicaoAtual.nome}
+                </p>
+              </div>
+              <button
+                onClick={trocarInstituicao}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <RefreshCw size={13} />
+                Trocar instituição
+              </button>
+            </div>
+          ) : (
+            <div className="text-slate-600 text-xs px-2">Carregando...</div>
+          )}
+          <p className="text-slate-600 text-xs px-2 mt-3">© {new Date().getFullYear()} Finanças Libélula</p>
         </div>
       </aside>
     </>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DollarSign, Eye, EyeOff, Loader2, Phone, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, Phone, Lock } from "lucide-react";
 
 function formatarTelefone(valor: string): string {
   const numeros = valor.replace(/\D/g, "").slice(0, 11);
@@ -58,10 +58,10 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-xl mb-4">
-            <DollarSign size={32} className="text-white" />
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-xl mb-4 overflow-hidden">
+            <img src="/images/icon_logo.png" alt="Logo" width={48} height={48} className="object-contain" />
           </div>
-          <h1 className="text-2xl font-bold text-white">FinançasPro</h1>
+          <h1 className="text-2xl font-bold text-white">Finanças Libélula</h1>
           <p className="text-slate-400 text-sm mt-1">Controle Financeiro Pessoal</p>
         </div>
 
@@ -146,7 +146,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-slate-500 text-xs mt-6">
-          FinançasPro © {new Date().getFullYear()}
+          Finanças Libélula © {new Date().getFullYear()}
         </p>
       </div>
     </div>

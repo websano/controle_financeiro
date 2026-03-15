@@ -1,20 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
+    const cookieStore = await cookies();
+    const instituicaoId = cookieStore.get("instituicao")?.value;
+    const filtroInst = instituicaoId ? { instituicaoId } : {};
+
     const [entradas, saidas, totalTransacoes] = await Promise.all([
       prisma.transacao.aggregate({
-        where: { tipo: "ENTRADA" },
+        where: { ...filtroInst, tipo: "ENTRADA" },
         _sum: { valor: true },
         _count: true,
       }),
       prisma.transacao.aggregate({
-        where: { tipo: "SAIDA" },
+        where: { ...filtroInst, tipo: "SAIDA" },
         _sum: { valor: true },
         _count: true,
       }),
-      prisma.transacao.count(),
+      prisma.transacao.count({ where: filtroInst }),
     ]);
 
     const totalEntradas = Number(entradas._sum.valor ?? 0);
@@ -23,6 +28,7 @@ export async function GET() {
 
     // Últimas 6 transações
     const ultimasTransacoes = await prisma.transacao.findMany({
+      where: filtroInst,
       take: 6,
       orderBy: { data: "desc" },
       include: { anexos: true, categoria: true },
@@ -35,7 +41,7 @@ export async function GET() {
     seisMesesAtras.setHours(0, 0, 0, 0);
 
     const transacoesPorMes = await prisma.transacao.findMany({
-      where: { data: { gte: seisMesesAtras } },
+      where: { ...filtroInst, data: { gte: seisMesesAtras } },
       select: {
         data: true,
         valor: true,
@@ -46,7 +52,7 @@ export async function GET() {
 
     // Agrupar por mês
     const meses: Record<string, { entradas: number; saidas: number }> = {};
-    transacoesPorMes.forEach((t) => {
+    transacoesPorMes.forEach((t: { data: Date; valor: unknown; tipo: string }) => {
       const chave = `${t.data.getFullYear()}-${String(t.data.getMonth() + 1).padStart(2, "0")}`;
       if (!meses[chave]) meses[chave] = { entradas: 0, saidas: 0 };
       if (t.tipo === "ENTRADA") meses[chave].entradas += Number(t.valor);
@@ -65,7 +71,7 @@ export async function GET() {
       contadorEntradas: entradas._count,
       contadorSaidas: saidas._count,
       totalTransacoes,
-      ultimasTransacoes: ultimasTransacoes.map((t) => ({
+      ultimasTransacoes: ultimasTransacoes.map((t: { valor: unknown } & Record<string, unknown>) => ({
         ...t,
         valor: Number(t.valor),
       })),

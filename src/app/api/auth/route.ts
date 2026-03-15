@@ -18,5 +18,6 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
   res.cookies.delete("auth");
+  res.cookies.delete("instituicao");
   return res;
 }

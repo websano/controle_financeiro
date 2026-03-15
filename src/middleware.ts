@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rotas públicas
+  // Rotas totalmente públicas (sem auth)
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/api/auth") ||
@@ -15,8 +15,20 @@ export function middleware(request: NextRequest) {
 
   const auth = request.cookies.get("auth");
   if (!auth?.value) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Rotas que precisam de auth mas não de instituição selecionada
+  if (
+    pathname.startsWith("/selecionar-instituicao") ||
+    pathname.startsWith("/api/instituicoes")
+  ) {
+    return NextResponse.next();
+  }
+
+  const instituicao = request.cookies.get("instituicao");
+  if (!instituicao?.value) {
+    return NextResponse.redirect(new URL("/selecionar-instituicao", request.url));
   }
 
   return NextResponse.next();

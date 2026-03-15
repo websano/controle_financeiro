@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
+    const cookieStore = await cookies();
+    const instituicaoId = cookieStore.get("instituicao")?.value;
+
     const { searchParams } = new URL(request.url);
     const tipo = searchParams.get("tipo"); // ENTRADA | SAIDA | null
     const pagina = parseInt(searchParams.get("pagina") ?? "1");
@@ -10,14 +14,20 @@ export async function GET(request: NextRequest) {
     const busca = searchParams.get("busca") ?? "";
     const dataInicio = searchParams.get("dataInicio");
     const dataFim = searchParams.get("dataFim");
+    const categoriasParam = searchParams.get("categorias");
 
     const where: Record<string, unknown> = {};
+    if (instituicaoId) where.instituicaoId = instituicaoId;
     if (tipo && (tipo === "ENTRADA" || tipo === "SAIDA")) where.tipo = tipo;
     if (busca) {
       where.OR = [
         { titulo: { contains: busca, mode: "insensitive" } },
         { observacao: { contains: busca, mode: "insensitive" } },
       ];
+    }
+    if (categoriasParam) {
+      const ids = categoriasParam.split(",").filter(Boolean);
+      if (ids.length > 0) where.categoriaId = { in: ids };
     }
     if (dataInicio || dataFim) {
       where.data = {};
@@ -41,7 +51,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     return NextResponse.json({
-      transacoes: transacoes.map((t) => ({ ...t, valor: Number(t.valor) })),
+      transacoes: transacoes.map((t: { valor: unknown } & Record<string, unknown>) => ({ ...t, valor: Number(t.valor) })),
       total,
       pagina,
       porPagina,
@@ -55,6 +65,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = await cookies();
+    const instituicaoId = cookieStore.get("instituicao")?.value;
+
     const body = await request.json();
     const { titulo, observacao, data, valor, tipo, categoriaId } = body;
 
@@ -70,6 +83,7 @@ export async function POST(request: NextRequest) {
         valor: parseFloat(valor),
         tipo,
         ...(categoriaId ? { categoriaId } : {}),
+        ...(instituicaoId ? { instituicaoId } : {}),
       },
       include: { anexos: true },
     });

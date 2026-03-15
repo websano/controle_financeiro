@@ -241,7 +241,7 @@ export default function DashboardPage() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
               {dados?.ultimasTransacoes.map((t) => (
                 <TransacaoCard
                   key={t.id}
