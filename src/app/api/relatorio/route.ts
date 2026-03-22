@@ -16,11 +16,8 @@ export async function GET(request: NextRequest) {
     if (instituicaoId) where.instituicaoId = instituicaoId;
     if (dataInicio || dataFim) {
       where.data = {};
-      if (dataInicio) (where.data as Record<string, unknown>).gte = new Date(dataInicio + "T00:00:00");
-      if (dataFim) {
-        const fim = new Date(dataFim + "T23:59:59");
-        (where.data as Record<string, unknown>).lte = fim;
-      }
+      if (dataInicio) (where.data as Record<string, unknown>).gte = new Date(dataInicio + "T00:00:00.000Z");
+      if (dataFim) (where.data as Record<string, unknown>).lte = new Date(dataFim + "T23:59:59.999Z");
     }
     if (categoriasParam) {
       const ids = categoriasParam.split(",").filter(Boolean);

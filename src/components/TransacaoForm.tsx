@@ -224,17 +224,22 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
 
   const isTipoEntrada = form.tipo === "ENTRADA";
 
+  const inputClass = (erro?: string) =>
+    `w-full px-4 py-3 rounded-xl border text-base text-white placeholder:text-[#e5d3b9]/30 bg-[#065c62] outline-none transition focus:ring-2 focus:ring-offset-0 ${
+      erro ? "border-red-500/50 focus:ring-red-500/30" : "border-[#e5d3b9]/15 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
+    }`;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Tipo de transação */}
-      <div className="flex rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+      <div className="flex rounded-xl overflow-hidden border border-[#e5d3b9]/15 bg-[#065c62]">
         <button
           type="button"
           onClick={() => setForm((p) => ({ ...p, tipo: "ENTRADA" }))}
           className={`flex-1 py-4 text-sm font-semibold transition-all ${
             isTipoEntrada
               ? "bg-emerald-500 text-white shadow-inner"
-              : "text-slate-500 hover:bg-slate-100"
+              : "text-[#e5d3b9]/60 hover:bg-[#054f54]"
           }`}
         >
           ↑ Entrada
@@ -245,7 +250,7 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
           className={`flex-1 py-4 text-sm font-semibold transition-all ${
             !isTipoEntrada
               ? "bg-red-500 text-white shadow-inner"
-              : "text-slate-500 hover:bg-slate-100"
+              : "text-[#e5d3b9]/60 hover:bg-[#054f54]"
           }`}
         >
           ↓ Saída
@@ -256,8 +261,8 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Título */}
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Título <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-[#e5d3b9] mb-1">
+            Título <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
@@ -265,20 +270,18 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
             value={form.titulo}
             onChange={handleChange}
             placeholder="Ex: Salário, Aluguel, Conta de luz..."
-            className={`w-full px-4 py-3 rounded-xl border text-base outline-none transition
-              focus:ring-2 focus:ring-offset-1
-              ${erros.titulo ? "border-red-400 focus:ring-red-300" : "border-slate-300 focus:ring-emerald-300 focus:border-emerald-400"}`}
+            className={inputClass(erros.titulo)}
           />
-          {erros.titulo && <p className="text-red-500 text-xs mt-1">{erros.titulo}</p>}
+          {erros.titulo && <p className="text-red-400 text-xs mt-1">{erros.titulo}</p>}
         </div>
 
         {/* Valor */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Valor (R$) <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-[#e5d3b9] mb-1">
+            Valor (R$) <span className="text-red-400">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">R$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e5d3b9]/50 text-sm font-medium">R$</span>
             <input
               type="text"
               name="valor"
@@ -286,40 +289,36 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
               onChange={handleValorChange}
               placeholder="0,00"
               inputMode="numeric"
-              className={`w-full pl-10 pr-4 py-3 rounded-xl border text-base outline-none transition
-                focus:ring-2 focus:ring-offset-1
-                ${erros.valor ? "border-red-400 focus:ring-red-300" : "border-slate-300 focus:ring-emerald-300 focus:border-emerald-400"}`}
+              className={`${inputClass(erros.valor)} pl-10`}
             />
           </div>
-          {erros.valor && <p className="text-red-500 text-xs mt-1">{erros.valor}</p>}
+          {erros.valor && <p className="text-red-400 text-xs mt-1">{erros.valor}</p>}
         </div>
 
         {/* Data */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Data <span className="text-red-500">*</span>
+        <div className="min-w-0">
+          <label className="block text-sm font-medium text-[#e5d3b9] mb-1">
+            Data <span className="text-red-400">*</span>
           </label>
           <input
             type="date"
             name="data"
             value={form.data}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-xl border text-base outline-none transition
-              focus:ring-2 focus:ring-offset-1
-              ${erros.data ? "border-red-400 focus:ring-red-300" : "border-slate-300 focus:ring-emerald-300 focus:border-emerald-400"}`}
+            className={`${inputClass(erros.data)} [color-scheme:dark] max-w-full`}
           />
-          {erros.data && <p className="text-red-500 text-xs mt-1">{erros.data}</p>}
+          {erros.data && <p className="text-red-400 text-xs mt-1">{erros.data}</p>}
         </div>
 
         {/* Categoria */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
+          <label className="block text-sm font-medium text-[#e5d3b9] mb-1">Categoria</label>
           <div className="flex gap-2">
             <select
               name="categoriaId"
               value={form.categoriaId}
               onChange={handleChange}
-              className="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-base outline-none transition focus:ring-2 focus:ring-offset-1 focus:ring-emerald-300 focus:border-emerald-400 bg-white"
+              className="flex-1 px-4 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white text-base outline-none transition focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
             >
               <option value="">Sem categoria</option>
               {categorias.map((c) => (
@@ -330,7 +329,7 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
               type="button"
               onClick={() => { setModalCat(true); setNomeCat(""); setCorCat("#6366f1"); setErroCat(null); }}
               title="Nova categoria"
-              className="w-12 rounded-xl border border-slate-300 text-slate-500 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 transition flex items-center justify-center flex-shrink-0"
+              className="w-12 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-[#e5d3b9]/60 hover:border-emerald-500/50 hover:text-emerald-400 hover:bg-[#054f54] transition flex items-center justify-center flex-shrink-0"
             >
               <Plus size={18} />
             </button>
@@ -339,22 +338,21 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
 
         {/* Observação */}
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 mb-1">Observação</label>
+          <label className="block text-sm font-medium text-[#e5d3b9] mb-1">Observação</label>
           <textarea
             name="observacao"
             value={form.observacao}
             onChange={handleChange}
             rows={3}
             placeholder="Adicione uma nota ou descrição..."
-            className="w-full px-4 py-3 rounded-xl border border-slate-300 text-base outline-none resize-none transition
-              focus:ring-2 focus:ring-offset-1 focus:ring-emerald-300 focus:border-emerald-400"
+            className="w-full px-4 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white placeholder:text-[#e5d3b9]/30 text-base outline-none resize-none transition focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
           />
         </div>
       </div>
 
       {/* Área de upload */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">
+        <label className="block text-sm font-medium text-[#e5d3b9] mb-2">
           Anexos (imagens ou PDF, máx. 10MB cada)
         </label>
 
@@ -364,21 +362,21 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
             {anexos.map((a) => (
               <div
                 key={a.id}
-                className="flex items-center gap-2 bg-slate-100 rounded-xl px-3 py-2 text-sm border border-slate-200"
+                className="flex items-center gap-2 bg-[#065c62] rounded-xl px-3 py-2 text-sm border border-[#e5d3b9]/15"
               >
                 {a.tipo === "image" ? (
-                  <Image size={14} className="text-emerald-500" />
+                  <Image size={14} className="text-emerald-400" />
                 ) : (
-                  <FileText size={14} className="text-red-500" />
+                  <FileText size={14} className="text-red-400" />
                 )}
-                <a href={a.url} target="_blank" rel="noreferrer" className="text-slate-700 hover:underline max-w-[150px] truncate">
+                <a href={a.url} target="_blank" rel="noreferrer" className="text-[#e5d3b9] hover:underline max-w-[150px] truncate">
                   {a.nomeOriginal}
                 </a>
-                <span className="text-slate-400 text-xs">{formatarBytes(a.tamanho)}</span>
+                <span className="text-[#e5d3b9]/40 text-xs">{formatarBytes(a.tamanho)}</span>
                 <button
                   type="button"
                   onClick={() => removerAnexoExistente(a.id)}
-                  className="text-slate-400 hover:text-red-500 transition"
+                  className="text-[#e5d3b9]/40 hover:text-red-400 transition"
                 >
                   <X size={14} />
                 </button>
@@ -394,14 +392,14 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition
-            ${arrastando ? "border-emerald-400 bg-emerald-50" : "border-slate-300 hover:border-emerald-400 hover:bg-slate-50"}`}
+            ${arrastando ? "border-emerald-400 bg-emerald-500/10" : "border-[#e5d3b9]/20 hover:border-emerald-500/50 hover:bg-[#065c62]"}`}
         >
-          <Upload size={24} className="mx-auto mb-2 text-slate-400" />
-          <p className="hidden sm:block text-sm text-slate-500">
-            Arraste arquivos ou <span className="text-emerald-600 font-medium">clique para selecionar</span>
+          <Upload size={24} className="mx-auto mb-2 text-[#e5d3b9]/40" />
+          <p className="hidden sm:block text-sm text-[#e5d3b9]/60">
+            Arraste arquivos ou <span className="text-emerald-400 font-medium">clique para selecionar</span>
           </p>
-          <p className="sm:hidden text-sm font-semibold text-emerald-600">Toque para anexar arquivo</p>
-          <p className="text-xs text-slate-400 mt-1">JPG, PNG, GIF, WEBP, PDF</p>
+          <p className="sm:hidden text-sm font-semibold text-emerald-400">Toque para anexar arquivo</p>
+          <p className="text-xs text-[#e5d3b9]/30 mt-1">JPG, PNG, GIF, WEBP, PDF</p>
           <input
             ref={fileInputRef}
             type="file"
@@ -418,16 +416,16 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
             {arquivosUpload.map((f, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 bg-emerald-50 rounded-xl px-3 py-2 border border-emerald-100"
+                className="flex items-center gap-2 bg-emerald-500/10 rounded-xl px-3 py-2 border border-emerald-500/20"
               >
                 {f.type.startsWith("image/") ? (
-                  <Image size={14} className="text-emerald-500 flex-shrink-0" />
+                  <Image size={14} className="text-emerald-400 flex-shrink-0" />
                 ) : (
-                  <FileText size={14} className="text-red-500 flex-shrink-0" />
+                  <FileText size={14} className="text-red-400 flex-shrink-0" />
                 )}
-                <span className="text-sm text-slate-700 truncate flex-1">{f.name}</span>
-                <span className="text-xs text-slate-400">{formatarBytes(f.size)}</span>
-                <button type="button" onClick={() => removerArquivo(idx)} className="text-slate-400 hover:text-red-500 transition">
+                <span className="text-sm text-[#e5d3b9] truncate flex-1">{f.name}</span>
+                <span className="text-xs text-[#e5d3b9]/40">{formatarBytes(f.size)}</span>
+                <button type="button" onClick={() => removerArquivo(idx)} className="text-[#e5d3b9]/40 hover:text-red-400 transition">
                   <X size={14} />
                 </button>
               </div>
@@ -440,7 +438,7 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
       {mensagem && (
         <div
           className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium
-            ${mensagem.tipo === "sucesso" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"}`}
+            ${mensagem.tipo === "sucesso" ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30" : "bg-red-900/20 text-red-300 border border-red-500/30"}`}
         >
           {mensagem.tipo === "sucesso" ? <Check size={16} /> : <AlertCircle size={16} />}
           {mensagem.texto}
@@ -449,17 +447,17 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
 
       {/* Modal nova categoria */}
       {modalCat && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={(e) => { if (e.target === e.currentTarget) setModalCat(false); }}>
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={(e) => { if (e.target === e.currentTarget) setModalCat(false); }}>
+          <div className="bg-[#054f54] border border-[#e5d3b9]/15 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold text-slate-800">Nova categoria</h3>
-              <button type="button" onClick={() => setModalCat(false)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 transition">
+              <h3 className="text-base font-semibold text-white">Nova categoria</h3>
+              <button type="button" onClick={() => setModalCat(false)} className="p-1.5 rounded-lg text-[#e5d3b9]/50 hover:bg-[#065c62] hover:text-white transition">
                 <X size={16} />
               </button>
             </div>
 
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">Nome</label>
+              <label className="text-xs text-[#e5d3b9]/70 mb-1 block">Nome</label>
               <input
                 type="text"
                 value={nomeCat}
@@ -467,12 +465,12 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); criarCategoria(); } }}
                 placeholder="Ex: Alimentação, Transporte..."
                 autoFocus
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
+                className="w-full px-4 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white placeholder:text-[#e5d3b9]/30 text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-500 mb-2 block">Cor</label>
+              <label className="text-xs text-[#e5d3b9]/70 mb-2 block">Cor</label>
               <div className="flex flex-wrap gap-2">
                 {CORES_PRESET.map((cor) => (
                   <button
@@ -480,7 +478,7 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
                     type="button"
                     onClick={() => setCorCat(cor)}
                     className="w-8 h-8 rounded-lg border-2 transition flex items-center justify-center"
-                    style={{ backgroundColor: cor, borderColor: corCat === cor ? "#1e293b" : "transparent" }}
+                    style={{ backgroundColor: cor, borderColor: corCat === cor ? "#e5d3b9" : "transparent" }}
                   >
                     {corCat === cor && <Check size={12} className="text-white" strokeWidth={3} />}
                   </button>
@@ -488,13 +486,13 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
               </div>
             </div>
 
-            {erroCat && <p className="text-red-500 text-xs">{erroCat}</p>}
+            {erroCat && <p className="text-red-400 text-xs">{erroCat}</p>}
 
             <div className="flex gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => setModalCat(false)}
-                className="flex-1 py-3 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition"
+                className="flex-1 py-3 rounded-xl border border-[#e5d3b9]/20 text-sm text-[#e5d3b9] hover:bg-[#065c62] transition"
               >
                 Cancelar
               </button>
@@ -516,7 +514,7 @@ export default function TransacaoForm({ transacaoId, dadosIniciais, modo }: Tran
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex-1 py-4 rounded-xl border border-slate-300 text-base font-medium text-slate-600 hover:bg-slate-50 transition"
+          className="flex-1 py-4 rounded-xl border border-[#e5d3b9]/20 text-base font-medium text-[#e5d3b9] hover:bg-[#065c62] transition"
         >
           Cancelar
         </button>

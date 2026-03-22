@@ -31,12 +31,8 @@ export async function GET(request: NextRequest) {
     }
     if (dataInicio || dataFim) {
       where.data = {};
-      if (dataInicio) (where.data as Record<string, unknown>).gte = new Date(dataInicio);
-      if (dataFim) {
-        const fim = new Date(dataFim);
-        fim.setHours(23, 59, 59, 999);
-        (where.data as Record<string, unknown>).lte = fim;
-      }
+      if (dataInicio) (where.data as Record<string, unknown>).gte = new Date(dataInicio + "T00:00:00.000Z");
+      if (dataFim) (where.data as Record<string, unknown>).lte = new Date(dataFim + "T23:59:59.999Z");
     }
 
     const [transacoes, total] = await Promise.all([
@@ -79,7 +75,7 @@ export async function POST(request: NextRequest) {
       data: {
         titulo,
         observacao: observacao || null,
-        data: new Date(data),
+        data: new Date(data + "T12:00:00.000Z"),
         valor: parseFloat(valor),
         tipo,
         ...(categoriaId ? { categoriaId } : {}),

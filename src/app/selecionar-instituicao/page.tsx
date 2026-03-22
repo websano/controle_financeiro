@@ -40,29 +40,27 @@ export default function SelecionarInstituicaoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-[#043f43] flex flex-col items-center justify-center p-6">
       {/* Logo */}
-      <div className="flex items-center gap-3 mb-10">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg overflow-hidden">
-          <img src="/images/icon_logo.png" alt="Logo" width={36} height={36} className="object-contain" />
-        </div>
-        <div>
-          <h1 className="font-bold text-2xl text-slate-800 leading-tight">Finanças Libélula</h1>
-          <p className="text-slate-500 text-sm">Controle Financeiro</p>
+      <div className="flex flex-col items-center gap-3 mb-10">
+        <img src="/images/logo_app.png" alt="Logo" width={88} height={88} className="object-contain" />
+        <div className="text-center">
+          <h1 className="font-bold text-2xl text-white leading-tight">Finanças Libélula</h1>
+          <p className="text-[#e5d3b9]/70 text-sm">Controle Financeiro</p>
         </div>
       </div>
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h2 className="text-xl font-bold text-slate-800">Selecione a instituição</h2>
-          <p className="text-slate-500 text-sm mt-1">
+          <h2 className="text-xl font-bold text-white">Selecione a instituição</h2>
+          <p className="text-[#e5d3b9]/70 text-sm mt-1">
             Os registros financeiros serão vinculados à instituição escolhida
           </p>
         </div>
 
         {carregando ? (
           <div className="flex justify-center py-12">
-            <Loader2 size={28} className="animate-spin text-slate-400" />
+            <Loader2 size={28} className="animate-spin text-[#e5d3b9]/50" />
           </div>
         ) : (
           <div className="space-y-4">
@@ -73,9 +71,12 @@ export default function SelecionarInstituicaoPage() {
                   key={inst.id}
                   onClick={() => selecionar(inst.id)}
                   disabled={selecionando !== null}
-                  className="w-full bg-white rounded-2xl border-2 p-6 text-left transition-all hover:shadow-md active:scale-[0.99] disabled:opacity-60 group"
-                  style={{ borderColor: eSelecionando ? inst.cor : "transparent",
-                    boxShadow: eSelecionando ? `0 0 0 3px ${inst.cor}22` : undefined }}
+                  className="w-full bg-[#054f54] rounded-2xl border-2 border-[#e5d3b9]/10 p-6 text-left transition-all hover:border-[#e5d3b9]/30 hover:shadow-md active:scale-[0.99] disabled:opacity-60 group"
+                  style={
+                    eSelecionando
+                      ? { borderColor: inst.cor, boxShadow: `0 0 0 3px ${inst.cor}22` }
+                      : undefined
+                  }
                 >
                   <div className="flex items-center gap-4">
                     {/* Ícone */}
@@ -88,7 +89,7 @@ export default function SelecionarInstituicaoPage() {
 
                     {/* Nome */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-800 text-base leading-tight">
+                      <p className="font-bold text-white text-base leading-tight">
                         {inst.nome}
                       </p>
                       <div
@@ -115,7 +116,7 @@ export default function SelecionarInstituicaoPage() {
         )}
       </div>
 
-      <p className="mt-10 text-xs text-slate-400">
+      <p className="mt-10 text-xs text-[#e5d3b9]/30">
         Você pode trocar de instituição a qualquer momento pelo menu lateral
       </p>
     </div>

@@ -16,15 +16,15 @@ function NovaTransacaoContent() {
       <div className="flex items-center gap-3">
         <Link
           href="/transacoes"
-          className="p-3 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition"
+          className="p-3 rounded-xl border border-[#e5d3b9]/20 text-[#e5d3b9]/60 hover:bg-[#054f54] hover:text-white transition"
         >
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="text-2xl font-bold text-white">
             Nova {tipo === "ENTRADA" ? "Entrada" : "Saída"}
           </h1>
-          <p className="text-slate-500 text-sm">
+          <p className="text-[#e5d3b9]/70 text-sm">
             {tipo === "ENTRADA"
               ? "Registrar uma nova receita ou entrada financeira"
               : "Registrar uma nova despesa ou saída financeira"}
@@ -33,7 +33,7 @@ function NovaTransacaoContent() {
       </div>
 
       {/* Formulário */}
-      <div className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-100">
+      <div className="bg-[#054f54] rounded-2xl p-4 md:p-6 shadow-sm border border-[#e5d3b9]/10">
         <TransacaoForm key={tipo} modo="criar" dadosIniciais={{ tipo }} />
       </div>
     </div>
@@ -42,7 +42,7 @@ function NovaTransacaoContent() {
 
 export default function NovaTransacaoPage() {
   return (
-    <Suspense fallback={<div className="h-96 bg-slate-200 rounded-2xl animate-pulse" />}>
+    <Suspense fallback={<div className="h-96 bg-[#054f54] rounded-2xl animate-pulse" />}>
       <NovaTransacaoContent />
     </Suspense>
   );

@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Building2,
+  LogOut,
 } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 
@@ -74,6 +75,11 @@ function SidebarContent() {
     router.push("/selecionar-instituicao");
   };
 
+  const logout = async () => {
+    await fetch("/api/auth", { method: "DELETE" });
+    router.push("/login");
+  };
+
   function isAtivo(href: string) {
     const [path, query] = href.split("?");
     if (path === "/") return pathname === "/";
@@ -90,7 +96,7 @@ function SidebarContent() {
   return (
     <>
       {/* ===== BOTTOM NAV — somente mobile ===== */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex md:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#032e31] border-t border-[#e5d3b9]/15 flex md:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.3)]">
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const ativo = isAtivo(item.href);
@@ -105,11 +111,11 @@ function SidebarContent() {
                 ${
                   ativo
                     ? isEntrada
-                      ? "text-emerald-600"
+                      ? "text-emerald-400"
                       : isSaida
-                      ? "text-red-500"
-                      : "text-emerald-600"
-                    : "text-slate-400"
+                      ? "text-red-400"
+                      : "text-[#e5d3b9]"
+                    : "text-[#e5d3b9]/40"
                 }`}
             >
               <div
@@ -117,10 +123,10 @@ function SidebarContent() {
                   ${
                     ativo
                       ? isEntrada
-                        ? "bg-emerald-100"
+                        ? "bg-emerald-500/20"
                         : isSaida
-                        ? "bg-red-100"
-                        : "bg-emerald-100"
+                        ? "bg-red-500/20"
+                        : "bg-[#065c62]"
                       : ""
                   }`}
               >
@@ -134,7 +140,7 @@ function SidebarContent() {
         {/* Botão Menu */}
         <button
           onClick={() => setDrawerAberto(true)}
-          className="flex flex-col items-center justify-center flex-1 py-2 gap-0.5 text-[11px] font-medium text-slate-400 active:opacity-70"
+          className="flex flex-col items-center justify-center flex-1 py-2 gap-0.5 text-[11px] font-medium text-[#e5d3b9]/40 active:opacity-70"
         >
           <div className="w-9 h-9 rounded-xl flex items-center justify-center">
             <Menu size={21} />
@@ -148,25 +154,23 @@ function SidebarContent() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-[60] bg-black/50 md:hidden"
+            className="fixed inset-0 z-[60] bg-black/60 md:hidden"
             onClick={() => setDrawerAberto(false)}
           />
           {/* Painel */}
-          <div className="fixed top-0 left-0 h-full w-72 bg-slate-900 text-white z-[70] flex flex-col shadow-2xl md:hidden animate-in slide-in-from-left duration-200">
+          <div className="fixed top-0 left-0 h-full w-72 bg-[#032e31] text-white z-[70] flex flex-col shadow-2xl md:hidden animate-in slide-in-from-left duration-200">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-5 border-b border-slate-700">
+            <div className="flex items-center justify-between px-5 py-5 border-b border-[#e5d3b9]/15">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center overflow-hidden">
-                  <img src="/images/icon_logo.png" alt="Logo" width={28} height={28} className="object-contain" />
-                </div>
+                <img src="/images/logo_app.png" alt="Logo" width={36} height={36} className="object-contain flex-shrink-0" />
                 <div>
-                  <h1 className="font-bold text-base leading-tight">Finanças Libélula</h1>
-                  <p className="text-slate-400 text-xs">Controle Financeiro</p>
+                  <h1 className="font-bold text-base leading-tight text-white">Finanças Libélula</h1>
+                  <p className="text-[#e5d3b9]/60 text-xs">Controle Financeiro</p>
                 </div>
               </div>
               <button
                 onClick={() => setDrawerAberto(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-2 rounded-xl text-[#e5d3b9]/60 hover:text-white hover:bg-[#065c62] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -184,8 +188,8 @@ function SidebarContent() {
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
                       ${
                         ativo
-                          ? "bg-emerald-600 text-white shadow-md"
-                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                          ? "bg-[#065c62] text-[#e5d3b9] shadow-md"
+                          : "text-[#e5d3b9]/70 hover:bg-[#054f54] hover:text-white"
                       }`}
                   >
                     <Icon size={18} />
@@ -196,7 +200,7 @@ function SidebarContent() {
             </nav>
 
             {/* Instituição */}
-            <div className="px-4 py-4 border-t border-slate-700">
+            <div className="px-4 py-4 border-t border-[#e5d3b9]/15">
               {instituicaoAtual ? (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2.5 px-2">
@@ -210,31 +214,36 @@ function SidebarContent() {
                   </div>
                   <button
                     onClick={trocarInstituicao}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#e5d3b9]/60 hover:text-white hover:bg-[#054f54] transition-colors"
                   >
                     <RefreshCw size={13} />
                     Trocar instituição
                   </button>
                 </div>
               ) : (
-                <div className="text-slate-600 text-xs px-2">Carregando...</div>
+                <div className="text-[#e5d3b9]/40 text-xs px-2">Carregando...</div>
               )}
-              <p className="text-slate-600 text-xs px-2 mt-3">© {new Date().getFullYear()} Finanças Libélula</p>
+              <button
+                onClick={logout}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400/80 hover:text-red-300 hover:bg-red-900/20 transition-colors mt-2"
+              >
+                <LogOut size={13} />
+                Sair
+              </button>
+              <p className="text-[#e5d3b9]/30 text-xs px-2 mt-2">© {new Date().getFullYear()} Finanças Libélula</p>
             </div>
           </div>
         </>
       )}
 
       {/* ===== SIDEBAR — somente desktop ===== */}
-      <aside className="hidden md:flex fixed top-0 left-0 h-full w-64 bg-slate-900 text-white z-40 flex-col shadow-2xl">
+      <aside className="hidden md:flex fixed top-0 left-0 h-full w-64 bg-[#032e31] text-white z-40 flex-col shadow-2xl">
         {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-700">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center overflow-hidden">
-            <img src="/images/icon_logo.png" alt="Logo" width={32} height={32} className="object-contain" />
-          </div>
+        <div className="flex items-center gap-3 px-6 py-6 border-b border-[#e5d3b9]/15">
+          <img src="/images/logo_app.png" alt="Logo" width={40} height={40} className="object-contain flex-shrink-0" />
           <div>
-            <h1 className="font-bold text-lg leading-tight">Finanças Libélula</h1>
-            <p className="text-slate-400 text-xs">Controle Financeiro</p>
+            <h1 className="font-bold text-lg leading-tight text-white">Finanças Libélula</h1>
+            <p className="text-[#e5d3b9]/60 text-xs">Controle Financeiro</p>
           </div>
         </div>
 
@@ -250,8 +259,8 @@ function SidebarContent() {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
                   ${
                     ativo
-                      ? "bg-emerald-600 text-white shadow-md"
-                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      ? "bg-[#065c62] text-[#e5d3b9] shadow-md"
+                      : "text-[#e5d3b9]/70 hover:bg-[#054f54] hover:text-white"
                   }`}
               >
                 <Icon size={18} />
@@ -262,7 +271,7 @@ function SidebarContent() {
         </nav>
 
         {/* Instituição atual */}
-        <div className="px-4 py-4 border-t border-slate-700">
+        <div className="px-4 py-4 border-t border-[#e5d3b9]/15">
           {instituicaoAtual ? (
             <div className="space-y-2">
               <div className="flex items-center gap-2.5 px-2">
@@ -276,16 +285,23 @@ function SidebarContent() {
               </div>
               <button
                 onClick={trocarInstituicao}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#e5d3b9]/60 hover:text-white hover:bg-[#054f54] transition-colors"
               >
                 <RefreshCw size={13} />
                 Trocar instituição
               </button>
             </div>
           ) : (
-            <div className="text-slate-600 text-xs px-2">Carregando...</div>
+            <div className="text-[#e5d3b9]/40 text-xs px-2">Carregando...</div>
           )}
-          <p className="text-slate-600 text-xs px-2 mt-3">© {new Date().getFullYear()} Finanças Libélula</p>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400/80 hover:text-red-300 hover:bg-red-900/20 transition-colors mt-2"
+          >
+            <LogOut size={13} />
+            Sair
+          </button>
+          <p className="text-[#e5d3b9]/30 text-xs px-2 mt-2">© {new Date().getFullYear()} Finanças Libélula</p>
         </div>
       </aside>
     </>

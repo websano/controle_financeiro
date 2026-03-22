@@ -91,28 +91,28 @@ export default function CategoriasPage() {
     <div className="space-y-6 max-w-2xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Categorias</h1>
-        <p className="text-slate-500 text-sm mt-0.5">Organize suas transações por grupos</p>
+        <h1 className="text-2xl font-bold text-white">Categorias</h1>
+        <p className="text-[#e5d3b9]/70 text-sm mt-0.5">Organize suas transações por grupos</p>
       </div>
 
       {/* Formulário de criação */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-        <h2 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <Plus size={15} className="text-emerald-500" /> Nova categoria
+      <div className="bg-[#054f54] rounded-2xl p-5 shadow-sm border border-[#e5d3b9]/10">
+        <h2 className="text-sm font-semibold text-[#e5d3b9] mb-4 flex items-center gap-2">
+          <Plus size={15} className="text-emerald-400" /> Nova categoria
         </h2>
         <form onSubmit={criar} className="space-y-4">
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Nome</label>
+            <label className="text-xs text-[#e5d3b9]/70 mb-1 block">Nome</label>
             <input
               type="text"
               value={novoNome}
               onChange={(e) => { setNovoNome(e.target.value); setErro(null); }}
               placeholder="Ex: Alimentação, Transporte, Salário..."
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
+              className="w-full px-4 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white placeholder:text-[#e5d3b9]/30 text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
             />
           </div>
           <div>
-            <label className="text-xs text-slate-500 mb-2 block">Cor</label>
+            <label className="text-xs text-[#e5d3b9]/70 mb-2 block">Cor</label>
             <div className="flex flex-wrap gap-2">
               {CORES_PRESET.map((cor) => (
                 <button
@@ -120,14 +120,14 @@ export default function CategoriasPage() {
                   type="button"
                   onClick={() => setNovaCor(cor)}
                   className="w-9 h-9 rounded-xl border-2 transition flex items-center justify-center"
-                  style={{ backgroundColor: cor, borderColor: novaCor === cor ? "#1e293b" : "transparent" }}
+                  style={{ backgroundColor: cor, borderColor: novaCor === cor ? "#e5d3b9" : "transparent" }}
                 >
                   {novaCor === cor && <Check size={14} className="text-white" strokeWidth={3} />}
                 </button>
               ))}
             </div>
           </div>
-          {erro && <p className="text-red-500 text-xs">{erro}</p>}
+          {erro && <p className="text-red-400 text-xs">{erro}</p>}
           <button
             type="submit"
             disabled={salvando || !novoNome.trim()}
@@ -139,28 +139,28 @@ export default function CategoriasPage() {
       </div>
 
       {/* Lista de categorias */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-          <Tag size={15} className="text-slate-500" />
-          <h2 className="text-sm font-semibold text-slate-700">Categorias cadastradas</h2>
-          <span className="ml-auto text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{categorias.length}</span>
+      <div className="bg-[#054f54] rounded-2xl shadow-sm border border-[#e5d3b9]/10 overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#e5d3b9]/10 flex items-center gap-2">
+          <Tag size={15} className="text-[#e5d3b9]/60" />
+          <h2 className="text-sm font-semibold text-[#e5d3b9]">Categorias cadastradas</h2>
+          <span className="ml-auto text-xs text-[#e5d3b9]/60 bg-[#065c62] px-2 py-0.5 rounded-full">{categorias.length}</span>
         </div>
 
         {carregando ? (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[#e5d3b9]/10">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="px-5 py-4 flex items-center gap-3 animate-pulse">
-                <div className="w-9 h-9 rounded-xl bg-slate-200" />
-                <div className="flex-1 h-4 bg-slate-200 rounded-lg" />
+                <div className="w-9 h-9 rounded-xl bg-[#065c62]" />
+                <div className="flex-1 h-4 bg-[#065c62] rounded-lg" />
               </div>
             ))}
           </div>
         ) : categorias.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-sm">
+          <div className="py-12 text-center text-[#e5d3b9]/50 text-sm">
             Nenhuma categoria criada ainda
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[#e5d3b9]/10">
             {categorias.map((cat) => (
               <div key={cat.id} className="px-5 py-3.5 flex items-center gap-3">
                 {editandoId === cat.id ? (
@@ -172,7 +172,7 @@ export default function CategoriasPage() {
                           type="button"
                           onClick={() => setEditCor(cor)}
                           className="w-7 h-7 rounded-lg border-2 transition flex items-center justify-center"
-                          style={{ backgroundColor: cor, borderColor: editCor === cor ? "#1e293b" : "transparent" }}
+                          style={{ backgroundColor: cor, borderColor: editCor === cor ? "#e5d3b9" : "transparent" }}
                         >
                           {editCor === cor && <Check size={11} className="text-white" strokeWidth={3} />}
                         </button>
@@ -181,13 +181,13 @@ export default function CategoriasPage() {
                     <input
                       value={editNome}
                       onChange={(e) => setEditNome(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-emerald-300"
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white text-sm outline-none focus:ring-2 focus:ring-[#e5d3b9]/20"
                       autoFocus
                     />
-                    <button onClick={() => salvarEdicao(cat.id)} className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition">
+                    <button onClick={() => salvarEdicao(cat.id)} className="p-2 text-emerald-400 hover:bg-[#065c62] rounded-lg transition">
                       <Check size={16} />
                     </button>
-                    <button onClick={() => setEditandoId(null)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-lg transition">
+                    <button onClick={() => setEditandoId(null)} className="p-2 text-[#e5d3b9]/50 hover:bg-[#065c62] rounded-lg transition">
                       <X size={16} />
                     </button>
                   </>
@@ -199,18 +199,18 @@ export default function CategoriasPage() {
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-800">{cat.nome}</p>
-                      <p className="text-xs text-slate-400">{cat._count.transacoes} transações</p>
+                      <p className="text-sm font-medium text-white">{cat.nome}</p>
+                      <p className="text-xs text-[#e5d3b9]/50">{cat._count.transacoes} transações</p>
                     </div>
                     <button
                       onClick={() => { setEditandoId(cat.id); setEditNome(cat.nome); setEditCor(cat.cor); }}
-                      className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                      className="p-2 text-[#e5d3b9]/40 hover:text-white hover:bg-[#065c62] rounded-lg transition"
                     >
                       <Pencil size={15} />
                     </button>
                     <button
                       onClick={() => setConfirmandoId(cat.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                      className="p-2 text-[#e5d3b9]/40 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition"
                     >
                       <Trash2 size={15} />
                     </button>

@@ -20,27 +20,27 @@ export default function ModalConfirmacao({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancelar} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancelar} />
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-[#054f54] border border-[#e5d3b9]/15 rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-in fade-in zoom-in duration-200">
         <button
           onClick={onCancelar}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"
+          className="absolute top-4 right-4 text-[#e5d3b9]/50 hover:text-white transition"
         >
           <X size={18} />
         </button>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <AlertTriangle size={20} className="text-red-500" />
+          <div className="w-10 h-10 rounded-full bg-red-900/30 flex items-center justify-center flex-shrink-0">
+            <AlertTriangle size={20} className="text-red-400" />
           </div>
-          <h3 className="text-base font-semibold text-slate-800">{titulo}</h3>
+          <h3 className="text-base font-semibold text-white">{titulo}</h3>
         </div>
-        <p className="text-sm text-slate-500 mb-6">{mensagem}</p>
+        <p className="text-sm text-[#e5d3b9]/80 mb-6">{mensagem}</p>
         <div className="flex gap-3">
           <button
             onClick={onCancelar}
             disabled={carregando}
-            className="flex-1 py-4 rounded-xl border border-slate-200 text-base font-medium text-slate-600 hover:bg-slate-50 transition"
+            className="flex-1 py-4 rounded-xl border border-[#e5d3b9]/20 text-base font-medium text-[#e5d3b9] hover:bg-[#065c62] transition"
           >
             Cancelar
           </button>

@@ -39,7 +39,7 @@ export async function PUT(
       data: {
         titulo,
         observacao: observacao || null,
-        data: new Date(data),
+        data: new Date(data + "T12:00:00.000Z"),
         valor: parseFloat(valor),
         tipo,
         ...(categoriaId !== undefined ? { categoriaId: categoriaId || null } : {}),

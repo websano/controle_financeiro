@@ -136,38 +136,40 @@ export default function ExportModal({ onFechar }: ExportModalProps) {
     return `Até ${f(dataFim!)}`;
   };
 
+  const inputDateClass = "w-full px-2.5 py-2 rounded-lg border border-[#e5d3b9]/15 bg-[#065c62] text-white text-xs outline-none focus:ring-1 focus:ring-[#e5d3b9]/20 [color-scheme:dark]";
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onFechar} />
-      <div className="relative bg-white w-full sm:max-w-2xl max-h-[95vh] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onFechar} />
+      <div className="relative bg-[#054f54] border border-[#e5d3b9]/15 w-full sm:max-w-2xl max-h-[95vh] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
         {/* Cabeçalho */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-          <h2 className="text-sm font-bold text-slate-800">Exportar Relatório</h2>
-          <button onClick={onFechar} className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[#e5d3b9]/10">
+          <h2 className="text-sm font-bold text-white">Exportar Relatório</h2>
+          <button onClick={onFechar} className="p-1.5 rounded-xl text-[#e5d3b9]/50 hover:text-white hover:bg-[#065c62] transition">
             <X size={16} />
           </button>
         </div>
 
         {/* Filtros */}
-        <div className="px-5 py-3 border-b border-slate-100 space-y-3">
+        <div className="px-5 py-3 border-b border-[#e5d3b9]/10 space-y-3">
           {/* Período */}
           <div>
-            <div className="flex items-center gap-2 mb-2 text-xs font-medium text-slate-600">
+            <div className="flex items-center gap-2 mb-2 text-xs font-medium text-[#e5d3b9]">
               <Calendar size={12} /> Período
             </div>
             <div className="flex gap-2 items-end">
               <div className="flex-1">
-                <label className="text-[10px] text-slate-400 mb-0.5 block">Início</label>
+                <label className="text-[10px] text-[#e5d3b9]/50 mb-0.5 block">Início</label>
                 <input type="date" value={dataInicio}
                   onChange={(e) => { setDataInicio(e.target.value); setDados(null); }}
-                  className="w-full px-2.5 py-2 rounded-lg border border-slate-200 text-xs outline-none focus:ring-1 focus:ring-emerald-300" />
+                  className={inputDateClass} />
               </div>
               <div className="flex-1">
-                <label className="text-[10px] text-slate-400 mb-0.5 block">Fim</label>
+                <label className="text-[10px] text-[#e5d3b9]/50 mb-0.5 block">Fim</label>
                 <input type="date" value={dataFim}
                   onChange={(e) => { setDataFim(e.target.value); setDados(null); }}
-                  className="w-full px-2.5 py-2 rounded-lg border border-slate-200 text-xs outline-none focus:ring-1 focus:ring-emerald-300" />
+                  className={inputDateClass} />
               </div>
               <button onClick={buscarRelatorio} disabled={carregando}
                 className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-semibold transition disabled:opacity-60 flex items-center gap-1.5 flex-shrink-0">
@@ -180,12 +182,12 @@ export default function ExportModal({ onFechar }: ExportModalProps) {
           {/* Categorias */}
           {categorias.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 mb-2 text-xs font-medium text-slate-600">
+              <div className="flex items-center gap-2 mb-2 text-xs font-medium text-[#e5d3b9]">
                 <Tag size={12} /> Categorias
                 {categoriasSelecionadas.size > 0 && (
                   <button
                     onClick={() => { setCategoriasSelecionadas(new Set()); setDados(null); }}
-                    className="ml-auto text-[10px] text-slate-400 hover:text-red-500 transition"
+                    className="ml-auto text-[10px] text-[#e5d3b9]/40 hover:text-red-400 transition"
                   >
                     Limpar
                   </button>
@@ -217,20 +219,20 @@ export default function ExportModal({ onFechar }: ExportModalProps) {
             </div>
           )}
 
-          {erro && <p className="text-red-500 text-xs">{erro}</p>}
+          {erro && <p className="text-red-400 text-xs">{erro}</p>}
         </div>
 
         {/* Pré-visualização */}
         {dados && (
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
 
-            {/* Relatório capturável */}
+            {/* Relatório capturável — mantém fundo branco para exportação */}
             <div ref={relatorioRef} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
 
               {/* Cabeçalho do relatório */}
               <div
                 className="px-4 py-3 text-white"
-                style={{ backgroundColor: dados.instituicao?.cor ?? "#1e293b" }}
+                style={{ backgroundColor: dados.instituicao?.cor ?? "#043f43" }}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -332,8 +334,8 @@ export default function ExportModal({ onFechar }: ExportModalProps) {
             {/* Botões de exportação */}
             <div className="flex gap-2 pb-1">
               <button onClick={exportarPNG} disabled={exportando !== null}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition disabled:opacity-50">
-                {exportando === "png" ? <Loader2 size={13} className="animate-spin" /> : <ImageDown size={13} className="text-blue-500" />}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#e5d3b9]/20 bg-[#065c62] text-xs font-semibold text-[#e5d3b9] hover:bg-[#054f54] transition disabled:opacity-50">
+                {exportando === "png" ? <Loader2 size={13} className="animate-spin" /> : <ImageDown size={13} className="text-blue-400" />}
                 Salvar PNG
               </button>
               <button onClick={exportarPDF} disabled={exportando !== null}

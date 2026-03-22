@@ -57,14 +57,14 @@ export default function EditarTransacaoPage({
   }, [id]);
 
   if (carregando) {
-    return <div className="h-96 bg-slate-200 rounded-2xl animate-pulse" />;
+    return <div className="h-96 bg-[#054f54] rounded-2xl animate-pulse" />;
   }
 
   if (erro || !transacao) {
     return (
       <div className="text-center py-20">
-        <p className="text-slate-500">{erro ?? "Transação não encontrada"}</p>
-        <Link href="/transacoes" className="text-emerald-600 text-sm hover:underline mt-2 inline-block">
+        <p className="text-[#e5d3b9]/60">{erro ?? "Transação não encontrada"}</p>
+        <Link href="/transacoes" className="text-emerald-400 text-sm hover:underline mt-2 inline-block">
           Voltar para transações
         </Link>
       </div>
@@ -77,18 +77,18 @@ export default function EditarTransacaoPage({
       <div className="flex items-center gap-3">
         <Link
           href="/transacoes"
-          className="p-3 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition"
+          className="p-3 rounded-xl border border-[#e5d3b9]/20 text-[#e5d3b9]/60 hover:bg-[#054f54] hover:text-white transition"
         >
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Editar Transação</h1>
-          <p className="text-slate-500 text-sm">{transacao.titulo}</p>
+          <h1 className="text-2xl font-bold text-white">Editar Transação</h1>
+          <p className="text-[#e5d3b9]/70 text-sm">{transacao.titulo}</p>
         </div>
       </div>
 
       {/* Formulário */}
-      <div className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-100">
+      <div className="bg-[#054f54] rounded-2xl p-4 md:p-6 shadow-sm border border-[#e5d3b9]/10">
         <TransacaoForm
           modo="editar"
           transacaoId={transacao.id}

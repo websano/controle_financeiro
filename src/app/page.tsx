@@ -87,15 +87,15 @@ export default function DashboardPage() {
   if (carregando) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-8 bg-slate-200 rounded-xl w-1/3" />
+        <div className="h-8 bg-[#054f54] rounded-xl w-1/3" />
         <div className="space-y-3">
-          <div className="h-32 bg-slate-200 rounded-2xl" />
+          <div className="h-32 bg-[#054f54] rounded-2xl" />
           <div className="grid grid-cols-2 gap-3">
-            <div className="h-24 bg-slate-200 rounded-2xl" />
-            <div className="h-24 bg-slate-200 rounded-2xl" />
+            <div className="h-24 bg-[#054f54] rounded-2xl" />
+            <div className="h-24 bg-[#054f54] rounded-2xl" />
           </div>
         </div>
-        <div className="h-80 bg-slate-200 rounded-2xl" />
+        <div className="h-80 bg-[#054f54] rounded-2xl" />
       </div>
     );
   }
@@ -103,10 +103,10 @@ export default function DashboardPage() {
   if (erro) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-          <RefreshCw size={28} className="text-red-500" />
+        <div className="w-16 h-16 rounded-full bg-red-900/30 flex items-center justify-center">
+          <RefreshCw size={28} className="text-red-400" />
         </div>
-        <p className="text-slate-600 text-center max-w-sm">{erro}</p>
+        <p className="text-[#e5d3b9]/80 text-center max-w-sm">{erro}</p>
         <button
           onClick={carregarDados}
           className="px-6 py-2.5 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition"
@@ -122,8 +122,8 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Principal</h1>
-          <p className="text-slate-500 text-sm capitalize">
+          <h1 className="text-2xl font-bold text-white">Principal</h1>
+          <p className="text-[#e5d3b9]/70 text-sm capitalize">
             {format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
           </p>
         </div>
@@ -147,9 +147,9 @@ export default function DashboardPage() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => setExportModalAberto(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm"
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#e5d3b9]/20 bg-[#054f54] text-sm font-medium text-[#e5d3b9] hover:bg-[#065c62] transition shadow-sm"
         >
-          <FileDown size={15} className="text-emerald-500" />
+          <FileDown size={15} className="text-emerald-400" />
           Exportar Relatório
         </button>
       </div>
@@ -161,8 +161,8 @@ export default function DashboardPage() {
         {/* Saldo em Caixa — card hero */}
         <div className={`rounded-2xl p-5 md:p-6 border ${
           dados && dados.saldoCaixa >= 0
-            ? "bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-600"
-            : "bg-gradient-to-br from-red-500 to-red-600 border-red-600"
+            ? "bg-gradient-to-br from-emerald-600 to-emerald-700 border-emerald-700"
+            : "bg-gradient-to-br from-red-600 to-red-700 border-red-700"
         } text-white shadow-md`}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -184,30 +184,30 @@ export default function DashboardPage() {
 
         {/* Entradas e Saídas lado a lado */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 md:p-5">
+          <div className="rounded-2xl border border-[#e5d3b9]/10 bg-[#054f54] p-4 md:p-5">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
                 <ArrowUpCircle size={16} />
               </div>
-              <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">Entradas</span>
+              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">Entradas</span>
             </div>
-            <p className="text-xl md:text-2xl font-bold text-emerald-700 leading-tight">
+            <p className="text-xl md:text-2xl font-bold text-emerald-300 leading-tight">
               {formatarMoeda(dados?.totalEntradas ?? 0)}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{dados?.contadorEntradas ?? 0} lançamentos</p>
+            <p className="text-xs text-[#e5d3b9]/50 mt-1">{dados?.contadorEntradas ?? 0} lançamentos</p>
           </div>
 
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-4 md:p-5">
+          <div className="rounded-2xl border border-[#e5d3b9]/10 bg-[#054f54] p-4 md:p-5">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-xl bg-red-500 flex items-center justify-center text-white flex-shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 flex-shrink-0">
                 <ArrowDownCircle size={16} />
               </div>
-              <span className="text-xs font-semibold text-red-500 uppercase tracking-wide">Saídas</span>
+              <span className="text-xs font-semibold text-red-400 uppercase tracking-wide">Saídas</span>
             </div>
-            <p className="text-xl md:text-2xl font-bold text-red-600 leading-tight">
+            <p className="text-xl md:text-2xl font-bold text-red-300 leading-tight">
               {formatarMoeda(dados?.totalSaidas ?? 0)}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{dados?.contadorSaidas ?? 0} lançamentos</p>
+            <p className="text-xs text-[#e5d3b9]/50 mt-1">{dados?.contadorSaidas ?? 0} lançamentos</p>
           </div>
         </div>
       </div>
@@ -215,33 +215,33 @@ export default function DashboardPage() {
       {/* Gráfico + Últimas transações */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Gráfico */}
-        <div className="xl:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-          <h2 className="text-base font-semibold text-slate-800 mb-4">
+        <div className="xl:col-span-2 bg-[#054f54] rounded-2xl p-6 shadow-sm border border-[#e5d3b9]/10">
+          <h2 className="text-base font-semibold text-white mb-4">
             Entradas e Saídas — Últimos 6 meses
           </h2>
           <GraficoMensal dados={dados?.graficoMensal ?? []} />
         </div>
 
         {/* Últimas transações */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div className="bg-[#054f54] rounded-2xl p-6 shadow-sm border border-[#e5d3b9]/10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-slate-800">Últimas Transações</h2>
-            <Link href="/transacoes" className="text-xs text-emerald-600 hover:underline font-medium">
+            <h2 className="text-base font-semibold text-white">Últimas Transações</h2>
+            <Link href="/transacoes" className="text-xs text-[#e5d3b9] hover:underline font-medium">
               Ver todas
             </Link>
           </div>
           {dados?.ultimasTransacoes.length === 0 ? (
-            <div className="text-center py-10 text-slate-400 text-sm">
+            <div className="text-center py-10 text-[#e5d3b9]/50 text-sm">
               <p className="mb-3">Nenhuma transação ainda</p>
               <Link
                 href="/transacoes/nova?tipo=ENTRADA"
-                className="text-emerald-600 hover:underline text-xs"
+                className="text-emerald-400 hover:underline text-xs"
               >
                 Adicionar primeira transação
               </Link>
             </div>
           ) : (
-            <div className="rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
+            <div className="rounded-xl border border-[#e5d3b9]/15 overflow-hidden divide-y divide-[#e5d3b9]/10">
               {dados?.ultimasTransacoes.map((t) => (
                 <TransacaoCard
                   key={t.id}
@@ -267,4 +267,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

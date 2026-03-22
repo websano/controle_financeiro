@@ -124,8 +124,8 @@ export default function TransacoesPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Transações</h1>
-          <p className="text-slate-500 text-sm">{paginacao.total} registros encontrados</p>
+          <h1 className="text-2xl font-bold text-white">Transações</h1>
+          <p className="text-[#e5d3b9]/70 text-sm">{paginacao.total} registros encontrados</p>
         </div>
         <div className="flex gap-2">
           <Link
@@ -144,13 +144,13 @@ export default function TransacoesPage() {
       </div>
 
       {/* Filtros */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+      <div className="bg-[#054f54] rounded-2xl p-4 border border-[#e5d3b9]/10 shadow-sm space-y-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-[#e5d3b9]">
           <Filter size={14} /> Filtros
           {temFiltros && (
             <button
               onClick={limparFiltros}
-              className="ml-auto text-xs text-slate-400 hover:text-red-500 flex items-center gap-1 transition"
+              className="ml-auto text-xs text-[#e5d3b9]/50 hover:text-red-400 flex items-center gap-1 transition"
             >
               <X size={12} /> Limpar
             </button>
@@ -160,13 +160,13 @@ export default function TransacoesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Busca */}
           <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e5d3b9]/40" />
             <input
               type="text"
               value={busca}
               onChange={(e) => { setBusca(e.target.value); setPagina(1); }}
               placeholder="Buscar..."
-              className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
+              className="w-full pl-8 pr-4 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white placeholder:text-[#e5d3b9]/30 text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
             />
           </div>
 
@@ -174,7 +174,7 @@ export default function TransacoesPage() {
           <select
             value={filtroTipo}
             onChange={(e) => { setFiltroTipo(e.target.value as "" | "ENTRADA" | "SAIDA"); setPagina(1); }}
-            className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 bg-white"
+            className="w-full px-3 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40"
           >
             <option value="">Todos os tipos</option>
             <option value="ENTRADA">Entradas</option>
@@ -182,20 +182,24 @@ export default function TransacoesPage() {
           </select>
 
           {/* Data início */}
-          <input
-            type="date"
-            value={dataInicio}
-            onChange={(e) => { setDataInicio(e.target.value); setPagina(1); }}
-            className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
-          />
+          <div className="min-w-0">
+            <input
+              type="date"
+              value={dataInicio}
+              onChange={(e) => { setDataInicio(e.target.value); setPagina(1); }}
+              className="w-full max-w-full px-3 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40 [color-scheme:dark]"
+            />
+          </div>
 
           {/* Data fim */}
-          <input
-            type="date"
-            value={dataFim}
-            onChange={(e) => { setDataFim(e.target.value); setPagina(1); }}
-            className="w-full px-3 py-3 rounded-xl border border-slate-200 text-base outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400"
-          />
+          <div className="min-w-0">
+            <input
+              type="date"
+              value={dataFim}
+              onChange={(e) => { setDataFim(e.target.value); setPagina(1); }}
+              className="w-full max-w-full px-3 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#065c62] text-white text-base outline-none focus:ring-2 focus:ring-[#e5d3b9]/20 focus:border-[#e5d3b9]/40 [color-scheme:dark]"
+            />
+          </div>
         </div>
 
         {/* Pills de tipo */}
@@ -210,8 +214,8 @@ export default function TransacoesPage() {
                     ? "bg-emerald-500 text-white border-emerald-500"
                     : t === "SAIDA"
                     ? "bg-red-500 text-white border-red-500"
-                    : "bg-slate-700 text-white border-slate-700"
-                  : "border-slate-200 text-slate-500 hover:bg-slate-50"
+                    : "bg-[#065c62] text-white border-[#065c62]"
+                  : "border-[#e5d3b9]/20 text-[#e5d3b9]/60 hover:bg-[#065c62] hover:text-white"
                 }`}
             >
               {t === "ENTRADA" && <ArrowUpCircle size={11} />}
@@ -223,7 +227,7 @@ export default function TransacoesPage() {
 
         {/* Pills de categoria */}
         {categorias.length > 0 && (
-          <div className="flex gap-2 flex-wrap pt-1 border-t border-slate-100">
+          <div className="flex gap-2 flex-wrap pt-1 border-t border-[#e5d3b9]/10">
             {categorias.map((c) => {
               const ativa = categoriasFiltro.has(c.id);
               return (
@@ -253,25 +257,25 @@ export default function TransacoesPage() {
       {carregando ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-slate-200 rounded-2xl animate-pulse" />
+            <div key={i} className="h-16 bg-[#054f54] rounded-2xl animate-pulse" />
           ))}
         </div>
       ) : transacoes.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
-          <p className="text-slate-400 text-sm mb-3">Nenhuma transação encontrada</p>
+        <div className="bg-[#054f54] rounded-2xl p-12 text-center border border-[#e5d3b9]/10 shadow-sm">
+          <p className="text-[#e5d3b9]/50 text-sm mb-3">Nenhuma transação encontrada</p>
           {temFiltros && (
-            <button onClick={limparFiltros} className="text-emerald-600 text-xs hover:underline">
+            <button onClick={limparFiltros} className="text-emerald-400 text-xs hover:underline">
               Limpar filtros
             </button>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
+        <div className="bg-[#054f54] rounded-2xl border border-[#e5d3b9]/15 shadow-sm overflow-hidden divide-y divide-[#e5d3b9]/10">
           {/* Cabeçalho da tabela - apenas desktop */}
-          <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide w-16 flex-shrink-0">Data</p>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide flex-1">Descrição</p>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide text-right">Valor</p>
+          <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-[#043f43] border-b border-[#e5d3b9]/10">
+            <p className="text-[10px] font-semibold text-[#e5d3b9]/40 uppercase tracking-wide w-16 flex-shrink-0">Data</p>
+            <p className="text-[10px] font-semibold text-[#e5d3b9]/40 uppercase tracking-wide flex-1">Descrição</p>
+            <p className="text-[10px] font-semibold text-[#e5d3b9]/40 uppercase tracking-wide text-right">Valor</p>
             <div className="w-6" />
           </div>
           {transacoes.map((t) => (
@@ -286,17 +290,17 @@ export default function TransacoesPage() {
           <button
             disabled={pagina === 1}
             onClick={() => setPagina((p) => p - 1)}
-            className="px-5 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 disabled:opacity-40 hover:bg-slate-50 transition"
+            className="px-5 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#054f54] text-sm font-medium text-[#e5d3b9]/80 disabled:opacity-40 hover:bg-[#065c62] transition"
           >
             Anterior
           </button>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-[#e5d3b9]/60">
             {pagina} de {paginacao.totalPaginas}
           </span>
           <button
             disabled={pagina === paginacao.totalPaginas}
             onClick={() => setPagina((p) => p + 1)}
-            className="px-5 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 disabled:opacity-40 hover:bg-slate-50 transition"
+            className="px-5 py-3 rounded-xl border border-[#e5d3b9]/15 bg-[#054f54] text-sm font-medium text-[#e5d3b9]/80 disabled:opacity-40 hover:bg-[#065c62] transition"
           >
             Próximo
           </button>
