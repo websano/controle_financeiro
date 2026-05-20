@@ -1,0 +1,71 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Instituicao {
+  id         String      @id @default(cuid())
+  nome       String      @unique
+  slug       String      @unique
+  cor        String      @default("#6366f1")
+  createdAt  DateTime    @default(now())
+  categorias Categoria[]
+  transacoes Transacao[]
+
+  @@map("instituicoes")
+}
+
+model Categoria {
+  id            String       @id @default(cuid())
+  nome          String
+  cor           String       @default("#6366f1")
+  icone         String?
+  createdAt     DateTime     @default(now())
+  instituicaoId String?
+  instituicao   Instituicao? @relation(fields: [instituicaoId], references: [id], map: "categorias_instituicaoid_fkey")
+  transacoes    Transacao[]
+
+  @@unique([nome, instituicaoId], map: "categorias_nome_instituicaoid_key")
+  @@map("categorias")
+}
+
+model Transacao {
+  id            String        @id @default(cuid())
+  titulo        String
+  observacao    String?
+  data          DateTime
+  valor         Decimal       @db.Decimal(15, 2)
+  tipo          TipoTransacao
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  categoriaId   String?
+  instituicaoId String?
+  anexos        Anexo[]
+  categoria     Categoria?    @relation(fields: [categoriaId], references: [id])
+  instituicao   Instituicao?  @relation(fields: [instituicaoId], references: [id])
+
+  @@map("transacoes")
+}
+
+model Anexo {
+  id           String    @id @default(cuid())
+  nomeOriginal String
+  nomeArquivo  String
+  url          String
+  tipo         String
+  tamanho      Int
+  transacaoId  String
+  createdAt    DateTime  @default(now())
+  transacao    Transacao @relation(fields: [transacaoId], references: [id], onDelete: Cascade)
+
+  @@map("anexos")
+}
+
+enum TipoTransacao {
+  ENTRADA
+  SAIDA
+}
